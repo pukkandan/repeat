@@ -27,11 +27,11 @@ struct Arguments {
     no_break: bool,
 
     /// Repeat the command until it succeeds
-    #[arg(short = '0')]
+    #[arg(short = '0', long)]
     till_success: bool,
 
     /// Repeat the command until it fails
-    #[arg(short = '1')]
+    #[arg(short = '1', long)]
     till_failure: bool,
 }
 
