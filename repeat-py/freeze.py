@@ -9,9 +9,10 @@ path = os.path.dirname(os.path.realpath(os.path.abspath(__file__)))
 sys.path.insert(0, path)
 os.chdir(path)
 
-booststrap = py2exe.runtime.Runtime.bootstrap_modules
-booststrap.remove('encodings.*')
-booststrap.add('encodings.utf_8')
+bootstrap = py2exe.runtime.Runtime.bootstrap_modules
+bootstrap.remove('encodings.*')
+bootstrap.add('encodings.utf_8')
+bootstrap.add('encodings.cp1252')
 
 try:
     os.replace('repeat.exe', 'old.exe')
