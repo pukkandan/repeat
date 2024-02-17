@@ -36,6 +36,9 @@ def pad_to(num, max):
     return str(num).rjust(len(str(max)), '0')
 
 
+BREAK_CODE = 0xc000013a
+
+
 def main():
     args = parse_args()
     out = NO_OP if args.quiet else print
@@ -57,6 +60,7 @@ def main():
             elif args.till == 'failure':
                 out('Repeating...')
             out()
+
         counter = '' if args.attempts == float('inf') else f' {pad_to(idx + 1, args.attempts)}/{args.attempts}'
         out(f'Running{counter}: {args.command}')
 
@@ -65,14 +69,14 @@ def main():
             proc.communicate()
             return_code = proc.returncode
         except KeyboardInterrupt:
-            return_code = 0xc000013a
+            return_code = BREAK_CODE
         if args.till == 'success':
             if not return_code:
                 return
             out(f'Command failed with error code {return_code}. ', end='')
         if args.till == 'failure':
             if return_code:
-                return
+                return return_code
             out('Command succeeded. ', end='')
         else:
             assert args.till is None
@@ -81,4 +85,4 @@ def main():
 
 
 if __name__ == '__main__':
-    SystemExit(main())
+    raise SystemExit(main())

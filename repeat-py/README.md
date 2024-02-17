@@ -1,7 +1,7 @@
 Initial implementation in Python. This was re-written in Rust due to performance reasons
 
 ```
-usage: repeat [-h] [-b] [-q] [-0] [-1] [-n ATTEMPTS] [-d] CMD
+usage: repeat.exe [-h] [-b] [-q] [-0] [-1] [-n ATTEMPTS] [-d] CMD
 
 Repeat a command
 
@@ -18,3 +18,7 @@ options:
                         Maximum number of times to repeat
   -d, --direct          Do not use shell
 ```
+
+---
+
+To compile, run `uv run freeze.py`

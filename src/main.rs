@@ -1,7 +1,9 @@
+use std::process::exit;
+
 use clap::Parser;
-use execute;
-use create_process_w;
-use wintrap::{trap, Signal::CtrlC, Signal::CtrlBreak};
+use create_process_w::Command;
+use execute::shell;
+use wintrap::{Signal::CtrlC, Signal::CtrlBreak, trap};
 
 /// Repeat a command
 #[derive(Parser)]
@@ -35,13 +37,15 @@ struct Arguments {
     till_failure: bool,
 }
 
-fn run(cmd: &String, direct: &bool) -> i64 {
+const BREAK_CODE: u32 = 0xc000013a;
+
+fn run(cmd: &String, direct: &bool) -> u32 {
     if *direct {
-        create_process_w::Command::new(cmd).status().expect("Failed to run").code().into()
+        Command::new(cmd).status().expect("Failed to run").code()
     } else {
-        match execute::shell(cmd).status().expect("Failed to run").code() {
-            Some(code) => code.into(),
-            None => 0xc000013a,
+        match shell(cmd).status().expect("Failed to run").code() {
+            Some(code) => code as u32,
+            None => BREAK_CODE,
         }
     }
 }
@@ -82,7 +86,7 @@ fn main() {
         }
         if return_code == 0 && args.till_success ||
             return_code != 0 && args.till_failure {
-                break;
+                exit(return_code as i32);
         }
     }
 }
