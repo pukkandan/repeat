@@ -17,6 +17,7 @@ options:
   -n ATTEMPTS, --attempts ATTEMPTS
                         Maximum number of times to repeat
   -d, --direct          Do not use shell
+  --pause               Pause between attempts
 ```
 
 ---

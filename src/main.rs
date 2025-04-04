@@ -2,6 +2,7 @@ use std::process::exit;
 
 use clap::Parser;
 use create_process_w::Command;
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
 use execute::shell;
 use wintrap::{Signal::CtrlC, Signal::CtrlBreak, trap};
 
@@ -35,6 +36,10 @@ struct Arguments {
     /// Repeat the command until it fails
     #[arg(short = '1', long)]
     till_failure: bool,
+
+    /// Pause between attempts
+    #[arg(long)]
+    pause: bool,
 }
 
 const BREAK_CODE: u32 = 0xc000013a;
@@ -62,6 +67,21 @@ fn main() {
             },
             _ => {},
         };
+
+        if idx > 1 && args.pause {
+            let _ = event::read(); // Consume any pending events
+            if !args.quiet {println!("\nPress Enter to continue...");}
+            loop {
+                match event::read() {
+                    Ok(Event::Key(KeyEvent { code: KeyCode::Enter, .. })) => break,
+                    Ok(Event::Key(KeyEvent { code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL, .. })) => {
+                        exit(BREAK_CODE as i32);
+                    },
+                    _ => {}
+                }
+            }
+        }
+
         if idx > 1 && !args.quiet {
             if args.till_failure {
                 println!("Repeating...");

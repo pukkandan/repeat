@@ -3,6 +3,7 @@
 import argparse
 import signal
 import subprocess
+import msvcrt
 
 
 def parse_args(args=None):
@@ -17,6 +18,7 @@ def parse_args(args=None):
     parser.add_argument('-n', '--attempts', dest='attempts', type=int, default=float('inf'),
                         help='Maximum number of times to repeat')
     parser.add_argument('-d', '--direct', dest='shell', action='store_false', help='Do not use shell')
+    parser.add_argument('--pause', action='store_true', help='Pause between attempts')
 
     return parser.parse_args(args)
 
@@ -55,6 +57,12 @@ def main():
 
     for idx in frange(args.attempts):
         if idx:
+            if args.pause:
+                out('Press Enter to continue...')
+                while (ch := msvcrt.getch()) != b'\r':
+                    if ch == b'\x03':
+                        return BREAK_CODE
+
             if args.till == 'success':
                 out('Retrying...')
             elif args.till == 'failure':

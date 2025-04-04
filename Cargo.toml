@@ -1,7 +1,7 @@
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [package]
 name = "repeat"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 
 
@@ -10,3 +10,4 @@ clap = { version = "4", features = ["derive"] }
 execute = { version = "0" }
 create_process_w = { version = "0", package = "CreateProcessW" }
 wintrap = "0.3.1"
+crossterm = "0.28.1"
